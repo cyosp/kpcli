@@ -189,7 +189,7 @@ my $MAX_ATTACH_SIZE = 2*1024**2;  # Maximum size of entry file attachments
 
 # Application name and version
 my $APP_NAME = basename($0);  $APP_NAME =~ s/\.(pl|exe)$//;
-my $VERSION = "3.6";
+my $VERSION = "0.0";
 
 our $HISTORY_FILE = ""; # Gets set in the MyGetOpts() function
 our $PASSWD_ECHO_CHAR = '*';
@@ -762,7 +762,7 @@ sub open_kdb {
 		"Error(s) from File::KeePass:\n$@";
     if (scalar(@load_db_warns)) {
       $errmsg .= "\nWarning(s) from File::KeePass:\n";
-      my @warns = map { 
+      my @warns = map {
 		my $t = $_;
 		$t =~ s/[^[:print:]]+//g;
 		$t =~ s/(Found an unknown header type) \((\d+).+$/$1: $2/;
@@ -1345,7 +1345,7 @@ sub normalize_path_string($) {
     $path_str=join("\0",@path);
   } else { # Relative path
     my $pwd='';
-    if (defined($state->{path}->{id}) && 
+    if (defined($state->{path}->{id}) &&
 	defined($state->{all_grp_paths_rev}->{$state->{path}->{id}})) {
       $pwd = $state->{all_grp_paths_rev}->{$state->{path}->{id}};
     }
@@ -4563,7 +4563,7 @@ sub cli_version($$) {
       }
     } elsif (lc($OSNAME) eq 'darwin') {
       my $osver = get_macos_version();
-      if (defined($osver) && defined($osver->{'ProductName'}) && 
+      if (defined($osver) && defined($osver->{'ProductName'}) &&
 					defined($osver->{'ProductVersion'})) {
         my $prodname = $osver->{'ProductName'};
         if ($osver->{'ProductName'} =~ m/mac os x|macos/i) {
@@ -4999,7 +4999,7 @@ sub PrintSupportMessage {
   my $frequency = shift @_ || 20; # Every twentieth command by default
 
   my $t = color('yellow') .
-	"Please consider supporting kpcli development by sponsoring its " . 
+	"Please consider supporting kpcli development by sponsoring its " .
 	"author:\nhttps://github.com/sponsors/hightowe" . color('clear');
 
   # We need to keep count of how often we're called (command count)
