@@ -1,0 +1,81 @@
+name: Release application package
+
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get tag name
+        id: tag
+        run: echo ::set-output name=NAME::${GITHUB_REF/refs\/tags\//}
+
+      - name: Checkout code
+        uses: actions/checkout@v2.3.4
+
+      - name: Use tag name as application version
+        uses: jacobtomlinson/gha-find-replace@0.1.2
+        with:
+          include: "kpcli"
+          find: '"0.0"'
+          replace: '"${{ steps.tag.outputs.NAME }}"'
+
+      - name: Package kpcli
+        run: ./package.bash "${{ steps.tag.outputs.NAME }}"
+
+      - name: Create check sum file
+        run: sha512sum *.deb > kpcli-SHA512.txt
+
+      - name: Create GitHub release
+        id: release
+        uses: actions/create-release@v1.1.4
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: ${{ steps.tag.outputs.NAME }}
+          draft: true
+
+      - name: Upload Debian package to release
+        uses: actions/github-script@v3.0.2
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          result-encoding: json
+          script: |
+            const fs = require('fs').promises;
+            const { repo: { owner, repo } } = context;
+
+            for (let file of await fs.readdir('.')) {
+              if(file.match(/.*\.deb/)) {
+                console.log('Upload:', file);
+                await github.repos.uploadReleaseAsset({
+                  owner, repo,
+                  release_id: "${{ steps.release.outputs.id }}",
+                  name: file,
+                  data: await fs.readFile(`./${file}`)
+                });
+              }
+            }
+
+      - name: Upload check sum file to release
+        uses: actions/upload-release-asset@v1.0.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.release.outputs.upload_url }}
+          asset_path: kpcli-SHA512.txt
+          asset_name: kpcli-SHA512.txt
+          asset_content_type: text/plain
+
+      - name: Publish release with notes
+        uses: cyosp/publish-release-with-notes@1.0.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          id: ${{ steps.release.outputs.id }}
+          version: ${{ steps.tag.outputs.NAME }}
+          notes: ${{ github.workspace }}/RELEASE-NOTES.md
