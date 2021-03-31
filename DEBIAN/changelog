@@ -1,0 +1,5 @@
+kpcli (3.6.1) stable; urgency=low
+
+  * Add --pwd option to provide master password
+
+ -- CYOSP <cyosp@cyosp.com>  Wed, 31 Mar 2021 22:15:00 +0200

@@ -1,0 +1,9 @@
+Package: kpcli
+Version: 0.0-0
+Section: utils
+Priority: optional
+Architecture: amd64 armhf
+Depends: libcapture-tiny-perl, libclipboard-perl, libclone-perl, libcrypt-rijndael-perl, libfile-keepass-perl, libterm-readkey-perl, libterm-readline-gnu-perl, libterm-shellui-perl, libsort-naturally-perl, perl
+Maintainer: CYOSP
+Description: Command line interface to KeePassX password manager databases
+Homepage: http://www.cyosp.com
