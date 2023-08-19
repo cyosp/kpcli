@@ -653,7 +653,7 @@ our $state={
 	};
 # If given --kdb=, open that file
 if (defined($opts->{kdb}) && length($opts->{kdb})) {
-  my $err = open_kdb($opts->{kdb}, $opts->{key}); # Sets $state->{'kdb'}
+  my $err = open_kdb($opts->{kdb}, $opts->{key}, $opts->{pwd}); # Sets $state->{'kdb'}
   if (length($err)) {
     print "$err\n";
     exit -1; # We exit if we failed to load the --kdb file
@@ -4994,7 +4994,7 @@ sub GetPassword {
 sub MyGetOpts {
   my %opts=();
   my @params = (
-	"kdb=s", "key=s", "pwfile=s", "histfile=s",
+	"kdb=s", "key=s", "pwfile=s", "pwd=s", "histfile=s",
 	"help", "h", "readonly", "no-recycle", "timeout=i", "command=s@",
 	"nopwstars", "nopwprint", "pwsplchars=s", "xpxsecs=i", "xclipsel=s",
 	"pwwords=s", "pwlen=i", "pwscmin=i", "pwscmax=i");
@@ -5181,6 +5181,7 @@ sub GetUsageMessage {
     [ 'kdb=s'      => 'Optional KeePass database file to open (must exist).' ],
     [ 'key=s'      => 'Optional KeePass key file (must exist).' ],
     [ 'pwfile=s'   => 'Read master password from file instead of console.' ],
+    [ 'pwd=s'      => 'Master password.' ],
     [ 'histfile=s' => 'Specify your history file (or perhaps /dev/null).' ],
     [ readonly     => 'Run in read-only mode; no changes will be allowed.' ],
     [ "timeout=i"  => 'Lock interface after i seconds of inactivity.' ],
